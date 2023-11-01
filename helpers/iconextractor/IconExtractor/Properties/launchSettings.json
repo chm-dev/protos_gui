@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "IconExtractor": {
+      "commandName": "Project",
+      "commandLineArgs": "\"[{Path: 'C:\\\\dev\\\\ahk\\\\fishing.ahk', Context: 2},{Path: 'C:\\\\dev\\\\ahk\\\\Editors\\\\master.zip', Context: 3}]\""
+    }
+  }
+}

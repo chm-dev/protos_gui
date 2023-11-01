@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "s0ua6Rg6VJ7eenezNHPezhITr9CFXdiupxZek8IrSRgK9zfpnE73i0dKL5SRWPmvCPIOw6wy+6AP+Nug8aDEWg==",
+  "success": true,
+  "projectFilePath": "C:\\dev\\neutralino\\protos_gui\\helpers\\iconextractor\\IconExtractor\\IconExtractor.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\chm\\.nuget\\packages\\microsoft.win32.systemevents\\7.0.0\\microsoft.win32.systemevents.7.0.0.nupkg.sha512",
+    "C:\\Users\\chm\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\chm\\.nuget\\packages\\system.drawing.common\\7.0.0\\system.drawing.common.7.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
