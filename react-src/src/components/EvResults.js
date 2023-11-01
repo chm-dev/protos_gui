@@ -29,7 +29,7 @@ class EvResults extends Component {
   }
 
   onBlur(ev) {
-    this.listClass = '';/
+    this.listClass = '';
     this.setState({active: 0});
   }
 
