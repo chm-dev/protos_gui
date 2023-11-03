@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import EvResults from './EvResults';
 import cfg from '../config';
 
+import { Input } from '@fluentui/react-components';
+
 import axios from 'axios';
 //import csvtojson from 'csvtojson'; import { events, os } from '@neutralinojs/lib';
 
@@ -104,6 +106,16 @@ class EvQuery extends Component {
   render() {
     return (
       <div>
+        <Input
+          id="test1"
+          {...this.props}
+          ref={this.searchInputRef}
+          disabled={this.state.mode}
+          onChange={ev => this.onValueChange(ev)}
+          onKeyDown={ev => this.onKeyDown(ev)}
+          onFocus={ev => this.onFocus(ev)}
+          onBlur={ev => this.onBlur(ev)}
+        />
         <input
           className="main-input"
           ref={this.searchInputRef}

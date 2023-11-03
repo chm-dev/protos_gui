@@ -8,5 +8,4 @@ neutralino.js
 .tmp/*
 .tmp
 react-src/public/index.html
-react-src/public/index.html
-react-src/public/index.html
+node-modules/*
