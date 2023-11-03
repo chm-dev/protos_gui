@@ -72,7 +72,6 @@ class EvResults extends Component {
           if (getIconProc.id === evt.detail.id) {
             switch (evt.detail.action) {
               case 'stdOut':
-                debugger;
                 payload += evt.detail.data;
                 break;
               case 'stdErr':

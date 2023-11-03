@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import EvResults from './EvResults';
+
+import { Container, TextField, InputAdornment, Chip } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import { deepOrange } from '@mui/material/colors';
 import cfg from '../config';
 
 import axios from 'axios';
@@ -99,26 +103,44 @@ class EvQuery extends Component {
   }
 
   componentDidMount() {
-    this.searchInputRef.current.focus();
+    //  this.searchInputRef.current.focus();
   }
   render() {
     return (
-      <div>
-        <input
-          className="main-input"
-          ref={this.searchInputRef}
+      <Container>
+        <TextField
+          autoFocus
+          hiddenLabel
+          size="small"
+          margin="normal"
+          fullWidth
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon sx={{ color: deepOrange[500] }} />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment position="end">
+                <Chip variant="Outlined" label="*.*" />
+                <Chip variant="Outlined" label="All" />
+              </InputAdornment>
+            )
+          }}
+          inputRef={this.searchInputRef}
           disabled={this.state.mode}
           onChange={ev => this.onValueChange(ev)}
           onKeyDown={ev => this.onKeyDown(ev)}
           onFocus={ev => this.onFocus(ev)}
           onBlur={ev => this.onBlur(ev)}
         />
+
         <EvResults
           fileList={this.state.fileList}
           searchInputRef={this.searchInputRef}
           childInputRef={this.childInputRef}
         />
-      </div>
+      </Container>
     );
   }
 }
