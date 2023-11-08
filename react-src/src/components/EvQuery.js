@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import EvResults from './EvResults';
 
 import { Container, TextField, InputAdornment, Chip } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { deepOrange } from '@mui/material/colors';
-import cfg from '../config';
-
 import axios from 'axios';
+import Hotkeys from 'react-hot-keys';
+
+import EvResults from './EvResults';
+import FilterControl from './EvQuery/FilterControl';
+import cfg from '../config';
 //import csvtojson from 'csvtojson'; import { events, os } from '@neutralinojs/lib';
 
 class EvQuery extends Component {
@@ -16,14 +18,21 @@ class EvQuery extends Component {
     this.childInputRef = React.createRef();
     this.state = {
       fileList: [],
-      active: 0
+      active: 0,
+      currentFilter: 1
     };
   }
 
   evParams =
-    'count=10&path_column=1&date_created_column=1&j=1&date_modified_column=1&sort=size&ascending=0&diacritics=1&size_column=1&attributes_column=1';
+    'count=10&path_column=1&date_created_column=1&j=1&date_modified_column=1&sort=date_modified&ascending=0&diacritics=1&size_column=1&attributes_column=1&r=1';
   searchTerm = '';
   timeoutId = null;
+
+  getSearchTerm() {
+    let searchTerm = this.searchInputRef.current.value;
+    if (this.state.currentFilter === 2) searchTerm += '.*.exe$';
+    return searchTerm;
+  }
 
   onFocus() {
     this.setState({ active: 1 });
@@ -38,9 +47,21 @@ class EvQuery extends Component {
       this.childInputRef.current.focus();
     }
   }
+  queryEv() {
+    console.log(this.searchTerm);
 
+    axios
+      .get(
+        `${cfg.evEndpoint}?search=${this.getSearchTerm(this.state.currentFilter)}&${
+          this.evParams
+        }`
+      )
+      .then(res => {
+        this.setState({ fileList: res.data.results });
+      });
+  }
   onValueChange(ev) {
-    this.searchTerm = ev.target.value;
+    this.searchTerm = this.getSearchTerm(this);
 
     if (this.timeoutId) {
       clearTimeout(this.timeoutId);
@@ -48,51 +69,8 @@ class EvQuery extends Component {
     }
     if (this.searchTerm.trim().length > 2) {
       this.timeoutId = setTimeout(
-        async that => {
-          axios
-            .get(`${cfg.evEndpoint}?search=${this.searchTerm}&${this.evParams}`)
-            .then(res => {
-              this.setState({ fileList: res.data.results });
-            });
-
-          /* let getFileList = await os.spawnProcess(`C:/dev/neutralino/protos_gui/helpers/es.exe ${this.searchTerm} ext:exe;lnk;ico -csv -da -n 20 -sort-date-accessed-descending -size -attrib -name -path-column`);
-
-                        let payload = '';
-
-                        const eventHandler = async (evt) => {
-                          if (getFileList.id === evt.detail.id) {
-
-                            switch (evt.detail.action) {
-                              case 'stdOut':
-
-                                payload += evt.detail.data ? evt.detail.data : ''
-                                //    }/${fileList[i].name}'}"`);
-                                break;
-                              case 'stdErr':
-                                console.error(evt.detail.data);
-                                break;
-                              case 'exit':
-
-                                if (!payload || payload.trim().length === 0) break;
-
-                                const newFileList = await csvtojson().fromString(payload.replaceAll('\\', '/'))
-                                newFileList.name = newFileList.Name;
-                                newFileList.path = newFileList.Path;
-
-                                this.setState({ fileList: newFileList });
-                                events.off('spawnedProcess', eventHandler);
-                                this.forceUpdate();
-
-
-                                break;
-
-                            }
-                          }
-                        }
-
-                        events.on('spawnedProcess', eventHandler);
-
-                  */
+        () => {
+          this.queryEv();
         },
         250,
         this
@@ -102,17 +80,33 @@ class EvQuery extends Component {
     }
   }
 
-  componentDidMount() {
-    //  this.searchInputRef.current.focus();
+  onComponentKeyDown(ev) {
+    if (
+      ev.key &&
+      typeof Number(ev.key) === 'number' &&
+      [1, 2, 3].some(el => el === Number(ev.key)) &&
+      ev.ctrlKey
+    ) {
+      ev.preventDefault();
+
+      this.setState({ currentFilter: Number(ev.key) });
+    }
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.currentFilter === this.state.currentFilter) return false;
+    this.queryEv();
+  }
+
   render() {
     return (
-      <Container>
+      <Container onKeyDown={ev => this.onComponentKeyDown(ev)}>
+        <FilterControl currentFilter={this.state.currentFilter} />
         <TextField
           autoFocus
           hiddenLabel
           size="small"
-          margin="normal"
+          margin="dense"
           fullWidth
           InputProps={{
             startAdornment: (
@@ -122,13 +116,12 @@ class EvQuery extends Component {
             ),
             endAdornment: (
               <InputAdornment position="end">
-                <Chip variant="Outlined" label="*.*" />
-                <Chip variant="Outlined" label="All" />
+                <Chip variant="Outlined" label={this.state.currentFilter} />
+                <Chip variant="Outlined" label={this.state.currentFilter} />
               </InputAdornment>
             )
           }}
           inputRef={this.searchInputRef}
-          disabled={this.state.mode}
           onChange={ev => this.onValueChange(ev)}
           onKeyDown={ev => this.onKeyDown(ev)}
           onFocus={ev => this.onFocus(ev)}

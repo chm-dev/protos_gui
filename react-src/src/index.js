@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 
 import EvQuery from './components/EvQuery';
 import { init } from '@neutralinojs/lib';
@@ -26,4 +26,4 @@ root.render(
     <Main />
   </ThemeProvider>
 );
-init();
+init(); //neutralinojs

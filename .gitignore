@@ -7,4 +7,8 @@ neutralino.js
 .tmp/auth_info.json
 .tmp/*
 .tmp
+/react-src/public/*
 react-src/public/index.html
+.tmp/auth_info.json
+/react-src/public/index.html
+react-src/public
