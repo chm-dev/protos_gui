@@ -4,12 +4,11 @@ import { Container, TextField, InputAdornment, Chip } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { deepOrange } from '@mui/material/colors';
 import axios from 'axios';
-import Hotkeys from 'react-hot-keys';
 
 import EvResults from './EvResults';
 import FilterControl from './EvQuery/FilterControl';
+import doQuery from './EvQuery/searchProvider';
 import cfg from '../config';
-//import csvtojson from 'csvtojson'; import { events, os } from '@neutralinojs/lib';
 
 class EvQuery extends Component {
   constructor(props) {
@@ -23,14 +22,12 @@ class EvQuery extends Component {
     };
   }
 
-  evParams =
-    'count=10&path_column=1&date_created_column=1&j=1&date_modified_column=1&sort=date_modified&ascending=0&diacritics=1&size_column=1&attributes_column=1&r=1';
+  activeProvider = 'Everything';
   searchTerm = '';
   timeoutId = null;
 
   getSearchTerm() {
     let searchTerm = this.searchInputRef.current.value;
-    if (this.state.currentFilter === 2) searchTerm += '.*.exe$';
     return searchTerm;
   }
 
@@ -47,21 +44,19 @@ class EvQuery extends Component {
       this.childInputRef.current.focus();
     }
   }
-  queryEv() {
-    console.log(this.searchTerm);
+  async queryEv() {
+    const result = await doQuery(
+      this.activeProvider,
+      this.searchTerm,
+      this.state.currentFilter
+    );
 
-    axios
-      .get(
-        `${cfg.evEndpoint}?search=${this.getSearchTerm(this.state.currentFilter)}&${
-          this.evParams
-        }`
-      )
-      .then(res => {
-        this.setState({ fileList: res.data.results });
-      });
+    this.setState({ fileList: result });
+    this.forceUpdate();
   }
+
   onValueChange(ev) {
-    this.searchTerm = this.getSearchTerm(this);
+    this.searchTerm = this.getSearchTerm();
 
     if (this.timeoutId) {
       clearTimeout(this.timeoutId);
@@ -70,7 +65,7 @@ class EvQuery extends Component {
     if (this.searchTerm.trim().length > 2) {
       this.timeoutId = setTimeout(
         () => {
-          this.queryEv();
+          this.queryEv(this.activeProvider, this.searchTerm);
         },
         250,
         this
@@ -95,7 +90,7 @@ class EvQuery extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.currentFilter === this.state.currentFilter) return false;
-    this.queryEv();
+    if (this.searchTerm.length > 2) this.queryEv();
   }
 
   render() {

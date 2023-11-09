@@ -1,8 +1,7 @@
 .filterControlGroup button {
     font-family: monospace, Consolas;
     text-transform: initial;
-    padding: 2px;    
-
+    padding: 2px;
     line-height: 1.2em;
     border-radius: 0;
 }

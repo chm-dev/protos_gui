@@ -37,3 +37,59 @@ const eventHandler = async evt => {
 
 events.on("spawnedProcess", eventHandler);
 ```
+
+```jsx
+import React, { Component } from "react";
+import { events, os } from "@neutralinojs/lib";
+
+import {
+  List,
+  Box,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  IconButton
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import cfg from "../../config";
+
+import "../EvResults.css";
+
+class EvResultItem extends Component {
+  constructor(props) {
+    console.log(props);
+    super(props);
+    this.state.fileItem = this.state.fileItem;
+    this.state.i = this.props.ind;
+    console.log("STATE:" + this.state);
+  }
+
+  icon = this.state.fileItem.icon ? (
+    <img alt="" src={`data:image/jpeg;base64,${this.state.fileItem.icon}`} />
+  ) : (
+    <span />
+  );
+
+  render() {
+    console.log("STATE:" + this.state);
+    return (
+      <ListItem
+        secondaryAction={
+          <IconButton edge="end" aria-label="delete">
+            <DeleteIcon />
+          </IconButton>
+        }
+      >
+        <ListItemAvatar>{this.icon}</ListItemAvatar>
+
+        <ListItemText
+          primary={this.state.fileItem.name}
+          secondary={this.state.fileItem.path}
+        ></ListItemText>
+      </ListItem>
+    );
+  }
+}
+
+export default EvResultItem;
+```

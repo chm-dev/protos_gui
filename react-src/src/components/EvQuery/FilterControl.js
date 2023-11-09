@@ -9,8 +9,8 @@ class FilterControl extends Component {
   stateStyle = function(i) {
     return this.state.currentFilter === i
       ? {
-          bgcolor: 'success.main',
-          color: 'secondary.main'
+          bgcolor: 'secondary.main',
+          color: 'background.default'
         }
       : {};
   };
